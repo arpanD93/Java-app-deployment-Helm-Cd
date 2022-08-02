@@ -6,14 +6,14 @@ resources:
 
 
 variables:
-- group: nagapockv
+- group: javademo
 
 - name: azureResourceGroup
-  value: 'naga-rg'
+  value: 'Arpan_AKS_DEMO'
 - name: kubernetesCluster
-  value: 'NAGAAKS'
+  value: 'arpanaksjava'
 - name: azureSubscriptionEndpoint
-  value: 'aks'
+  value: 'aksep'
 
 pool:
   name: Azure Pipelines
@@ -34,7 +34,7 @@ steps:
 - task: qetza.replacetokens.replacetokens-task.replacetokens@5
   displayName: 'Replace tokens in **/*.yaml'
   inputs:
-    rootDirectory: 'MY-POC/'
+    rootDirectory: 'POC/'
     targetFiles: '**/*.yaml'
     verbosity: detailed
 
@@ -48,8 +48,8 @@ steps:
     namespace: 'kv'
     command: upgrade
     chartType: filepath
-    chartPath:  'MY-POC/'
-    valueFile: 'MY-POC/values.yaml'
+    chartPath:  'POC/'
+    valueFile: 'POC/values.yaml'
     releaseName: aks
     install: true
     waitForExecution: false
