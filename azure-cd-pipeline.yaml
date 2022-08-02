@@ -1,0 +1,55 @@
+trigger:
+- null
+
+resources:
+- repo: self
+
+
+variables:
+- group: nagapockv
+
+- name: azureResourceGroup
+  value: 'naga-rg'
+- name: kubernetesCluster
+  value: 'NAGAAKS'
+- name: azureSubscriptionEndpoint
+  value: 'aks'
+
+pool:
+  name: Azure Pipelines
+steps:
+- task: HelmInstaller@0
+  displayName: 'Install Helm 2.9.1'
+  inputs:
+    helmVersion: 2.9.1
+    kubectlVersion: 1.10.3
+    checkLatestKubectl: false
+
+# - task: HelmDeploy@0
+#   displayName: 'helm package'
+#   inputs:
+#     command: package
+#     chartPath: 'chart-source/aks-helloworld/'
+#     destination: $(Build.ArtifactStagingDirectory)
+- task: qetza.replacetokens.replacetokens-task.replacetokens@5
+  displayName: 'Replace tokens in **/*.yaml'
+  inputs:
+    rootDirectory: 'MY-POC/'
+    targetFiles: '**/*.yaml'
+    verbosity: detailed
+
+- task: HelmDeploy@0
+  displayName: Helm upgrade
+  inputs:
+    azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+    #kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
+    azureResourceGroup: $(azureResourceGroup)
+    kubernetesCluster: $(kubernetesCluster)
+    namespace: 'kv'
+    command: upgrade
+    chartType: filepath
+    chartPath:  'MY-POC/'
+    valueFile: 'MY-POC/values.yaml'
+    releaseName: aks
+    install: true
+    waitForExecution: false
