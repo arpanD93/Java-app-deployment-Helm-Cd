@@ -45,7 +45,7 @@ steps:
     #kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
     azureResourceGroup: $(azureResourceGroup)
     kubernetesCluster: $(kubernetesCluster)
-    namespace: 'kv'
+    namespace: 'javademo'
     command: upgrade
     chartType: filepath
     chartPath:  'POC/'
